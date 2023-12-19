@@ -1,0 +1,17 @@
+[submodule "OpenWhisk/project-src"]
+	path = OpenWhisk/project-src
+	url = https://github.com/Kingdo777/openwhisk.git
+	branch = chestbox
+[submodule "OpenWhisk/devtools"]
+	path = OpenWhisk/devtools
+	url = https://github.com/Kingdo777/openwhisk-devtools.git
+	branch = chestbox
+[submodule "StateFunction/core"]
+	path = StateFunction/core
+	url = https://github.com/Kingdo777/state-function.git
+[submodule "StateFunction/manager"]
+	path = StateFunction/manager
+	url = https://github.com/Kingdo777/state-function-manager.git
+[submodule "OpenWhisk/runtime-python"]
+	path = OpenWhisk/runtime-python
+	url = https://github.com/Kingdo777/openwhisk-runtime-python.git
