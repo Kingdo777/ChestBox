@@ -69,12 +69,15 @@ def main(event):
     transport_start_time = 1000 * time.time()
     if op == "OFC":
         x_data = redis_client.get("ml_render")
+        redis_client.delete("ml_render")
     elif op == "CB":
         x_data = bucket.get_bytes("ml_render")
+        bucket.destroy()
     elif op == "FT":
         x_data = event["ml_render"]
     else:
         x_data = s3.get_object(Bucket=BUCKET, Key=IMG_KEY.format("ml_render"))['Body'].read()
+        s3.delete_object(Bucket=BUCKET, Key=IMG_KEY.format("ml_render"))
     transport_end_time = 1000 * time.time()
 
     serialize_start_time = 1000 * time.time()
