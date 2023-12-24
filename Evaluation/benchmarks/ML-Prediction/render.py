@@ -56,7 +56,7 @@ def main(event):
     if op == "OFC":
         redis_client = redis.Redis(host='222.20.94.67', port=6379, db=0)
     elif op == "CB":
-        bucket = df.get_bucket("kingdo")
+        bucket = df.get_bucket("kingdo", True, event["action_pipe_key"])
     elif op == "FT":
         pass
     else:

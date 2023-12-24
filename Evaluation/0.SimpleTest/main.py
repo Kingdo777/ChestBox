@@ -1,5 +1,6 @@
 import json
 import time
+import ipc
 
 import numpy as np
 import pickle
@@ -16,6 +17,8 @@ import statefunction as df
 
 sf_time_used = 0
 
+Action_Pipe_Key = 0x1111
+
 
 def resize(path):
     global sf_time_used
@@ -25,7 +28,7 @@ def resize(path):
     resize_img = img.reshape(1, 224, 224, 3)
     ######################################################################
     start_time = 1000 * time.time()
-    bucket = df.create_bucket("kingdo", 1024 * 1024 * 4)
+    bucket = df.create_bucket("kingdo", 1024 * 1024 * 4, True, Action_Pipe_Key)
     bucket.set("resize_img", pickle.dumps(resize_img))
     sf_time_used = 1000 * time.time() - start_time
 
@@ -33,7 +36,7 @@ def resize(path):
 def predict():
     global sf_time_used
     start_time = 1000 * time.time()
-    bucket = df.get_bucket("kingdo")
+    bucket = df.get_bucket("kingdo", True, Action_Pipe_Key)
     resize_img = pickle.loads(bucket.get_bytes("resize_img"))
     sf_time_used += 1000 * time.time() - start_time
     ######################################################################
@@ -51,7 +54,7 @@ def predict():
 def render():
     global sf_time_used
     start_time = 1000 * time.time()
-    bucket = df.get_bucket("kingdo")
+    bucket = df.get_bucket("kingdo", True, Action_Pipe_Key)
     x = pickle.loads(bucket.get_bytes("x"))
     bucket.destroy()
     sf_time_used += 1000 * time.time() - start_time
@@ -64,7 +67,12 @@ def render():
 
 
 if __name__ == '__main__':
-    resize("data/img/photos_of_animals_and_plants/img-0.jpg")
-    predict()
-    print(render())
-    print("State-Function Overhead Time Used: {:.2f} ms".format(sf_time_used))
+    try:
+        msg = ipc.create_msg(Action_Pipe_Key)
+        resize("data/img/photos_of_animals_and_plants/img-0.jpg")
+        predict()
+        print(render())
+        print("State-Function Overhead Time Used: {:.2f} ms".format(sf_time_used))
+        msg.destroy()
+    except Exception as e:
+        print(e)

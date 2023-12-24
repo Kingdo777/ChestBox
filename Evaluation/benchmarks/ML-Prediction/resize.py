@@ -73,7 +73,7 @@ def main(event):
     if op == "OFC":
         redis_client = redis.Redis(host='222.20.94.67', port=6379, db=0)
     elif op == "CB":
-        bucket = df.create_bucket("kingdo", 1024 * 1024 * 4)
+        bucket = df.create_bucket("kingdo", 1024 * 1024 * 4, True, event["action_pipe_key"])
     elif op == "FT":
         pass
     else:

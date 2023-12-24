@@ -10,7 +10,8 @@ COPY requirements.txt /tmp/requirements.txt
 RUN pip install --proxy http://222.20.68.152:7890 -r /tmp/requirements.txt
 
 COPY statefunction-3.0.0-cp310-cp310-linux_x86_64.whl /tmp/statefunction-3.0.0-cp310-cp310-linux_x86_64.whl
-RUN pip install /tmp/statefunction-3.0.0-cp310-cp310-linux_x86_64.whl
+COPY ipc-1.0.0-cp310-cp310-linux_x86_64.whl /tmp/ipc-1.0.0-cp310-cp310-linux_x86_64.whl
+RUN pip install /tmp/statefunction-3.0.0-cp310-cp310-linux_x86_64.whl /tmp/ipc-1.0.0-cp310-cp310-linux_x86_64.whl
 
 COPY . /app
 
