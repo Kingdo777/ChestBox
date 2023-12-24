@@ -1,7 +1,8 @@
 #!/bin/bash
 
-cp ../../../StateFunction/core/src/state-function-library/statefunction-py-extend/dist/statefunction-3.0.0-cp310-cp310-linux_x86_64.whl ./
+# Run `git clone https://github.com/Kingdo777/ChestBox.git` for getting the project.
+ProjectRoot=$(dirname "$(dirname "$(dirname "$(realpath "$0")")")")
 
-docker build -t simple-test .
+sh -c "$ProjectRoot/tools/update-packages.sh"
 
 docker run --rm --ipc=container:wsk0_kingdo_guest_StateFunction1 simple-test
