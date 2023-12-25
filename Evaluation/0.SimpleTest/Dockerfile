@@ -13,7 +13,9 @@ COPY statefunction-3.0.0-cp310-cp310-linux_x86_64.whl /tmp/statefunction-3.0.0-c
 COPY ipc-1.0.0-cp310-cp310-linux_x86_64.whl /tmp/ipc-1.0.0-cp310-cp310-linux_x86_64.whl
 RUN pip install /tmp/statefunction-3.0.0-cp310-cp310-linux_x86_64.whl /tmp/ipc-1.0.0-cp310-cp310-linux_x86_64.whl
 
-COPY . /app
+COPY data /app/data
+
+COPY main.py /app
 
 WORKDIR /app
 
