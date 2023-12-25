@@ -44,21 +44,30 @@ class TimeStatistics:
     def add_resides_time(self, start_time):
         self.resides_time += (1000 * time.time() - start_time)
 
+    def reset(self):
+        self.exec_time = 0
+        self.invoke_time = 0
+        self.access_time = 0
+        self.resides_time = 0
+
     def __str__(self):
-        return "{}, {}, {}, {}".format(
+        return "{:.2f}, {:.2f}, {:.2f}, {:.2f}".format(
             self.exec_time, self.invoke_time, self.access_time, self.resides_time)
 
 
 class ImagePredictor:
-    def __init__(self, enable_pipe, image_path):
+    def __init__(self, enable_pipe):
         self.enable_pipe = enable_pipe
-        self.image_path = image_path
         self.time_statistics = TimeStatistics()
+        self.gd = tf.compat.v1.GraphDef.FromString(open('data/mobilenet_v2_1.0_224_frozen.pb', 'rb').read())
+        self.inp, self.predictions = tf.import_graph_def(self.gd,
+                                                         return_elements=
+                                                         ['input:0', 'MobilenetV2/Predictions/Reshape_1:0'])
 
-    def resize(self):
+    def resize(self, image_path):
         ######################################################################
         self.time_statistics.dot()
-        image = Image.open(self.image_path)
+        image = Image.open(image_path)
         img = np.array(image.resize((224, 224))).astype(float) / 128 - 1
         resize_img = img.reshape(1, 224, 224, 3)
         self.time_statistics.add_exec_time()
@@ -86,10 +95,8 @@ class ImagePredictor:
 
         ######################################################################
         self.time_statistics.dot()
-        gd = tf.compat.v1.GraphDef.FromString(open('data/mobilenet_v2_1.0_224_frozen.pb', 'rb').read())
-        inp, predictions = tf.import_graph_def(gd, return_elements=['input:0', 'MobilenetV2/Predictions/Reshape_1:0'])
-        with tf.compat.v1.Session(graph=inp.graph):
-            x = predictions.eval(feed_dict={inp: resize_img})
+        with tf.compat.v1.Session(graph=self.inp.graph):
+            x = self.predictions.eval(feed_dict={self.inp: resize_img})
         self.time_statistics.add_exec_time()
 
         ######################################################################
@@ -121,18 +128,23 @@ class ImagePredictor:
         self.time_statistics.add_exec_time()
         return text
 
-    def workflow(self):
-        self.resize()
+    def workflow(self, image_path):
+        self.resize(image_path)
 
         start_time = 1000 * time.time()
         self.predict()
         self.time_statistics.add_resides_time(start_time)
 
         start_time = 1000 * time.time()
-        print(self.render())
+        result = self.render()
         self.time_statistics.add_resides_time(start_time)
 
-        return str(self.time_statistics)
+        print(self.time_statistics, "\t\t\t\t", result, flush=True)
+
+        time_statistics_info = str(self.time_statistics)
+        self.time_statistics.reset()
+
+        return time_statistics_info
 
 
 def run_predict(image_path_lists, enable_pipe):
@@ -141,9 +153,10 @@ def run_predict(image_path_lists, enable_pipe):
         msg = ipc.create_msg(Action_Pipe_Key)
 
     result = []
-    for image in image_path_lists:
-        image_predictor = ImagePredictor(enable_pipe, image)
-        result.append(image_predictor.workflow())
+    image_predictor = ImagePredictor(enable_pipe)
+
+    for image_path in image_path_lists:
+        result.append(image_predictor.workflow(image_path))
 
     if enable_pipe:
         msg.destroy()
@@ -164,7 +177,7 @@ def main(argc, argv):
             image_path_lists.append(image_path)
     image_path_lists.sort()
 
-    image_path_lists = image_path_lists[:100]
+    # image_path_lists = image_path_lists[:10]
 
     try:
         result = run_predict(image_path_lists, enable_pipe)
