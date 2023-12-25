@@ -19,5 +19,11 @@ COPY main.py /app
 
 WORKDIR /app
 
+# turn off the state function spdlog
+ENV STATE_FUNCTION_LOG_LEVEL="off"
+# turn off the tensorflow log
+ENV TF_CPP_MIN_LOG_LEVEL="3"
+
+
 CMD ["python3", "main.py"]
 
