@@ -30,9 +30,9 @@ def workflow():
 
 
 def run_predict(loop):
+    subprocess.call("sudo rm -rf app", shell=True)
     subprocess.call("./gen-faastlane-runner.sh", shell=True)
     subprocess.call("cp -af ../data .faastlane/", shell=True)
-    subprocess.call("sudo rm -rf app", shell=True)
     subprocess.call("mkdir app", shell=True)
     subprocess.call("cp -af .faastlane/* app/", shell=True)
 
