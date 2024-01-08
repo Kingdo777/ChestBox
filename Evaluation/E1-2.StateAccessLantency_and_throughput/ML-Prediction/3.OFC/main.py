@@ -53,7 +53,7 @@ def run_predict(loop):
 def main(loop: int = 1):
     try:
         result = run_predict(loop)
-        record_file = "results/summary"
+        record_file = "results/summary-remote"
         with open(record_file, "w") as f:
             f.write("exec_time,invoke_time,access_time,resides_time\n")
             for i in result:
@@ -80,4 +80,4 @@ if __name__ == '__main__':
     #     print(e)
     #     exit(0)
 
-    main(1)
+    main(100)

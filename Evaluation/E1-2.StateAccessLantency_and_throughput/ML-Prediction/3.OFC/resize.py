@@ -24,7 +24,7 @@ def main():
     ######################################################################
     time_statistics.dot()
     redis_client = redis.Redis(
-        host="127.0.0.1",
+        host="222.20.94.66",
         port=6379)
     time_statistics.add_invoke_time()
 
