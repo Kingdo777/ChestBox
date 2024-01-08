@@ -4,6 +4,8 @@ RUN pip3 install --proxy=http://222.20.68.152:7890 tensorflow==2.10.0 pillow==9.
 
 RUN pip3 install --proxy=http://222.20.68.152:7890 redis
 
+RUN pip3 install --proxy=http://222.20.68.152:7890 requests_futures
+
 WORKDIR /app
 
 CMD ["/bin/bash"]
