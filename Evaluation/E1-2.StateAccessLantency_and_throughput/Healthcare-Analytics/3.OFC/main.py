@@ -4,6 +4,8 @@ from os.path import dirname
 import subprocess
 import docker
 
+from tool import redis_host, local_redis_host, remote_redis_host
+
 
 def workflow():
     subprocess.call("sudo rm -rf app", shell=True)
@@ -52,9 +54,9 @@ def run_predict(loop):
 def main(loop: int = 1):
     try:
         result = run_predict(loop)
-        record_file = "results/summary"
+        record_file = "results/summary-remote"
         with open(record_file, "w") as f:
-            f.write("exec_time,invoke_time,access_time,resides_time\n")
+            # f.write("exec_time,invoke_time,access_time,resides_time\n")
             for i in result:
                 f.write(str(i) + "\n")
     except Exception as e:
@@ -78,5 +80,6 @@ if __name__ == '__main__':
     # except Exception as e:
     #     print(e)
     #     exit(0)
-
+    if redis_host == local_redis_host:
+        raise Exception("redis_host is not ")
     main(100)

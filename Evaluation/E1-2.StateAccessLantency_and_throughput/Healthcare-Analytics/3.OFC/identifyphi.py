@@ -7,12 +7,12 @@ import boto3
 import redis
 from botocore.config import Config
 
-from tool import TimeStatistics
+from tool import TimeStatistics, redis_host, local_redis_host
 
 
 def extract_entities_from_message(message):
     redis_client = redis.Redis(
-        host="222.20.94.67",
+        host=local_redis_host,
         port=6379)
 
     if not redis_client.exists(message[:10]):
@@ -38,12 +38,12 @@ def main():
 
     ######################################################################
     time_statistics.dot()
-    redis_client = redis.Redis(host='222.20.94.67', port=6379, db=0)
+    redis_client = redis.Redis(host=redis_host, port=6379, db=0)
     time_statistics.add_invoke_time()
 
     ######################################################################
     time_statistics.dot()
-    redis_client.set("data", data)
+    redis_client.set("message", data)
     time_statistics.add_access_time()
 
     print(time_statistics)

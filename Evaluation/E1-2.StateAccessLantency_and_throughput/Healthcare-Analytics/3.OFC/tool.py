@@ -1,5 +1,10 @@
 import time
 
+remote_redis_host = "222.20.94.66"
+local_redis_host = "222.20.94.67"
+
+redis_host = remote_redis_host
+
 
 class TimeStatistics:
     def __init__(self):

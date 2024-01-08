@@ -1,7 +1,7 @@
 import pickle
 import time
 import redis
-from tool import TimeStatistics
+from tool import TimeStatistics, redis_host
 
 
 def mask_entities_in_message(message, entity_list):
@@ -16,7 +16,7 @@ def main():
     ######################################################################
     time_statistics.dot()
     redis_client = redis.Redis(
-        host="222.20.94.67",
+        host=redis_host,
         port=6379)
     time_statistics.add_invoke_time()
 

@@ -1,7 +1,7 @@
 import nltk
 import pickle
 import redis
-from tool import TimeStatistics
+from tool import TimeStatistics, redis_host
 
 nltk.data.path.append('/app/nltk_data/')
 from nltk.tokenize import word_tokenize
@@ -13,7 +13,7 @@ def main():
     ######################################################################
     time_statistics.dot()
     redis_client = redis.Redis(
-        host="222.20.94.67",
+        host=redis_host,
         port=6379)
     time_statistics.add_invoke_time()
 
